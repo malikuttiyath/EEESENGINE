@@ -1,0 +1,45 @@
+﻿body {
+    padding-top: 50px;
+   /* padding-bottom: 20px;*/
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+.panel-default {
+    border-color: #3a376f;
+}
+.panel {
+    background-color: #3a376f;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    color: #fff;
+    cursor: default;
+    background: linear-gradient(180deg, #2196f3, #009688);
+    /* border: 1px solid #ddd; */
+    border-bottom-color: transparent;
+}
+.table > thead:first-child > tr:first-child > th{
+    color:#fff;
+}
+.table-bordered > tbody > tr > td{
+    color:#fff
+}
+.nav-tabs > li > a{
+    color:#fff;
+}
+.nav > li > a:hover, .nav > li > a:focus {
+    background: linear-gradient(180deg, #2196f3, #009688);
+}
+#tblHomePrevious tr th {
+    background: #20477a;
+}

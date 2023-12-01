@@ -1,0 +1,362 @@
+﻿
+@{
+    ViewBag.Title = "KPIDirectAssessment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .cards {
+        display: flex;
+        justify-content: space-evenly;
+        background: #2d6389;
+        padding: 10px 9px 10px 10px;
+        border-radius: 10px;
+        box-shadow: 0 19px 38px rgb(0 0 0 / 12%), 0 15px 12px rgb(0 0 0 / 20%);
+    }
+
+    table {
+      /*  font-family: arial, sans-serif;*/
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    #tblAssessment {
+        border-collapse: collapse;
+    }
+
+    /*        #tblAssessment td, table.bordered th {
+            border: 1px solid orange;
+        }*/
+
+    .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+        border-bottom-width: 1px;
+        border-color: #7f7f7f;
+    }
+
+    .table-bordered {
+        border: 1px solid #7f7f7f;
+    }
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background: #7d83a799;
+    }
+    tr:nth-child(even) {
+        background-color: #7777775c;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="cards">
+
+            <div class="">
+                <h5>ACADEMIC YEAR</h5>
+                <select name="example" class="form-control" id="AcademicYear" style="width: 132px; height: 26px;" onchange="CourseChange(this)">
+                </select>
+            </div>
+
+            <div class="">
+                <h5>DEPARTMENT</h5>
+                <select name="example" class="form-control" id="Department" style="width: 220px; height: 26px;" onchange="CourseChange(this)">
+                </select>
+            </div>
+
+            <div class="">
+                <h5>PROGRAM</h5>
+                <select name="example" class="form-control" id="Program" style="width: 132px; height: 26px;" onchange="CourseChange(this)">
+                </select>
+            </div>
+
+            <div class="">
+                <h5>SEMESTER</h5>
+                <select name="example" class="form-control" id="Semster" style="width: 132px; height: 26px;" onchange="CourseChange(this)">
+                </select>
+            </div>
+
+            <div class="">
+                <h5>COURSE </h5>
+                <select name="Course" id="Course" class="form-control" style="width: 220px; height: 26px;" onchange="CourseChange(this)">
+                    @if (Model.Tables["Course"] != null)
+                    {
+                        <option value="-1">---Select---</option>
+                        foreach (System.Data.DataRow row in Model.Tables["Course"].Rows)
+                        {
+                            <option value="@row.ItemArray[0]">@row.ItemArray[2].ToString()</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <h5 style="color:#ffff; margin-top:20px;margin-bottom:15px;">ASSESSMENT(S) </h5>
+    <div class="row">
+        <div class="col-md-4">
+            <div>
+                <select id="multi-select" class="multiselect_one scrollbr-p" style="height: 150px !important;width:250px;" onchange="AssesmentChange(this)" multiple>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-8" id="AssessmentClos">
+
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:30px;">
+        <div class="col-md-12" id="AssessmentMark">
+
+        </div>
+        <div id="content" style="display:none">
+            <table id="tbltDetails" class="table table-bordered table-striped  color-border" width="600px">
+                <thead>
+                    <tr>
+                        <th style="width: 1%;">@Html.Label("S/N")</th>
+                        <th style="width: 5%">@Html.Label("")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <input type="hidden" value="@TempData["UserName"]" id="UserName" />
+        <input type="hidden" value="@TempData["Password"]" id="PassWord" />
+        <input type="hidden" value="@TempData["Token"]" id="Token" />
+    </div>
+    <div style="padding-right: 35px;">
+        <a onclick="Save()" class="btn btn-info" style="float:right;">Save</a>
+    </div>
+</div>
+<script>
+      $(document).ready(function () {
+        var BatchId = '@TempData["RerdirectBatchID"].ToString()'
+          if (BatchId != "0") {
+              $.ajax
+                  ({
+                      method: 'GET',
+                      url: '@Url.Action("fn_GetAssessmentToolKeyList", "Home")',
+                      datatype: 'json',
+                      data: { username: $('#UserName').val(), password: $('#PassWord').val(), Token: $('#Token').val(), batchId: btoa(BatchId) },
+                      success: function (data) {
+                          debugger;
+                          $('#Course').val(BatchId);
+                          $('#multi-select').empty();
+                          for (var i = 0; i < data[0].Value.length; i++) {
+                              $('#multi-select').append("<option value='" + data[0].Value[i].Value + "'>" + data[0].Value[i].Text + "</option>");
+                          }
+                          $('#Course').prop('disabled', true);
+                          $('#Department').empty();
+                          for (var i = 0; i < data[1].Value.length; i++) {
+                              $('#Department').append("<option value='" + data[1].Value[i].Value + "'>" + data[1].Value[i].Text + "</option>");
+                          }
+                          $('#Department').prop('disabled', true);
+                          $('#Semster').empty();
+                          for (var i = 0; i < data[2].Value.length; i++) {
+                              $('#Semster').append("<option value='" + data[2].Value[i].Value + "'>" + data[2].Value[i].Text + "</option>");
+                          }
+                          $('#Semster').prop('disabled', true);
+                          $('#AcademicYear').empty();
+                          for (var i = 0; i < data[3].Value.length; i++) {
+                              $('#AcademicYear').append("<option value='" + data[3].Value[i].Value + "'>" + data[3].Value[i].Text + "</option>");
+                          }
+                          $('#AcademicYear').prop('disabled', true);
+                          $('#Program').empty();
+                          for (var i = 0; i < data[4].Value.length; i++) {
+                              $('#Program').append("<option value='" + data[4].Value[i].Value + "'>" + data[4].Value[i].Text + "</option>");
+                          }
+                          $('#Program').prop('disabled', true);
+                      },
+                      error: function () {
+                          alert("  Something went wrong..")
+                      },
+                  });
+          }
+    })
+    function CourseChange(item) {
+        debugger;
+        $('#AssessmentClos').html('');
+        $('#AssessmentMark').html('');
+        var CourseId = item.selectedOptions[0].value;
+        $.ajax
+            ({
+                method: 'GET',
+                url: '@Url.Action("fn_GetAssessmentToolKeyList", "Home")',
+                datatype: 'json',
+                data: { username: $('#UserName').val(), password: $('#PassWord').val(), Token: $('#Token').val(), batchId: btoa(CourseId) },
+                success: function (data) {
+                    debugger;
+
+                    $('#multi-select').empty();
+                    for (var i = 0; i < data[0].Value.length; i++) {
+                        $('#multi-select').append("<option value='" + data[0].Value[i].Value + "'>" + data[0].Value[i].Text + "</option>");
+                    }
+                    $('#Department').empty();
+                    for (var i = 0; i < data[1].Value.length; i++) {
+                        $('#Department').append("<option value='" + data[1].Value[i].Value + "'>" + data[1].Value[i].Text + "</option>");
+                    }
+                    $('#Semster').empty();
+                    for (var i = 0; i < data[2].Value.length; i++) {
+                        $('#Semster').append("<option value='" + data[2].Value[i].Value + "'>" + data[2].Value[i].Text + "</option>");
+                    }
+                    $('#AcademicYear').empty();
+                    for (var i = 0; i < data[3].Value.length; i++) {
+                        $('#AcademicYear').append("<option value='" + data[3].Value[i].Value + "'>" + data[3].Value[i].Text + "</option>");
+                    }
+                    $('#Program').empty();
+                    for (var i = 0; i < data[4].Value.length; i++) {
+                        $('#Program').append("<option value='" + data[4].Value[i].Value + "'>" + data[4].Value[i].Text + "</option>");
+                    }
+                },
+                error: function () {
+                    alert("  Something went wrong..")
+                },
+            });
+    }
+    $(document).delegate('.btnEye', 'click', function () {
+        var id = this.name + "_1";
+        var CourseId = $('#Course').val();
+        var AssessmentId = $('#multi-select').val();
+        if (document.getElementById(id) != null) {
+            //$('[colspan="6"]').parent('tr').remove();
+            //var iconid = document.getElementById(this.name);
+            //iconid.className = "btn table-btn bg-green fa fa-file-text btnOrder";
+        }
+        else {
+            //$('[colspan="6"]').parent('tr').remove();
+            //var iconid = document.getElementById(this.name);
+            //var opendIds = document.getElementsByClassName("btn table-btn bg-green fa fa-times btnOrder");
+            //for (var i = 0; i < opendIds.length; i++) {
+            //    opendIds[i].className = "btn table-btn bg-green fa fa-file-text btnOrder";
+            //}
+            //iconid.className = "btn table-btn bg-green fa fa-times btnOrder";
+            $(this).parents('tr').after('<tr/>').next().append('<td id=' + id + ' colspan="6"/>').children('td').append('<div/>').children().css('background', 'transparent').html($('#content').html());
+            $('#tbltDetails').DataTable({
+                'destroy': true,
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': false,
+                'info': false,
+                'autoWidth': false,
+                "ajax": {
+                    "url": '@Url.Action("DetailsLoad", "Home")?username=' + $('#UserName').val() + '&password=' + $('#PassWord').val() + '&Token=' + $('#Token').val() + '&batchId=' + btoa(CourseId) + '&assesmentId=' + btoa(AssessmentId),
+                    "type": "GET",
+                },
+                "columns": [
+                    { "data": "slno" },
+                    { "data": "Drug" },
+                    { "data": "Quantity" },
+                    { "data": "RemainingQuantity" },
+                    { "data": "DATE" },
+                    { "data": "status" }
+                ],
+                initComplete: function () {
+                    $(this.api().table().container()).find('input[type="search"]').parent().wrap('<form>').parent().attr('autocomplete', 'off').css('overflow', 'hidden').css('margin', 'auto');
+                }
+            });
+        }
+    });
+    function AssesmentChange(item) {
+        debugger;
+        $('#AssessmentClos').html('');
+        $('#AssessmentMark').html('');
+        var CourseId = $('#Course').val();
+        var AssessmentId = item.selectedOptions[0].value;
+         @*$.ajax
+            ({
+                method: 'GET',
+                url: '@Url.Action("AssessmentCLOsPartial", "Home")',
+                datatype: 'json',
+                data: { username: $('#UserName').val(), password: $('#PassWord').val(), Token: $('#Token').val(), batchId: btoa(CourseId), assesmentId: btoa(AssessmentId) },
+                success: function (result) {
+                    debugger;
+                    $('#AssessmentClos').html(result);
+                },
+                error: function () {
+                    alert("  Something went wrong..")
+                },
+            });*@
+         $.ajax
+            ({
+                method: 'GET',
+                url: '@Url.Action("AssessmentDirectPartial", "Home")',
+                datatype: 'json',
+                data: { username: $('#UserName').val(), password: $('#PassWord').val(),Token: $('#Token').val(), batchId: btoa(CourseId), assesmentId: btoa(AssessmentId) },
+                success: function (result) {
+                    debugger;
+                    $('#AssessmentMark').html(result);
+                },
+                error: function () {
+                    alert("  Something went wrong..")
+                },
+            });
+
+    }
+    function Save() {
+        debugger;
+        var CourseId = $('#Course').val();
+        var AssessmentId = $('#multi-select').val();
+        var jasonData = JSON.stringify(parseHTMLTableElem());
+          $.ajax
+              ({
+                method: 'POST',
+                url: '@Url.Action("SaveAssessment", "Home")',
+                data: JSON.stringify({ username: $('#UserName').val(), password: $('#PassWord').val(),Token: $('#Token').val(), batchId: btoa(CourseId), assesmentId: btoa(AssessmentId), jsonData: jasonData}),
+                contentType: "application/json; charset=utf-8",
+                traditional: true,
+                  success: function (result) {
+                      if (result == "Sucesss") {
+                          swal({
+                              title: 'Sucesss!!',
+                              text: 'Saved Successfully',
+                              type: 'success',
+                              showCancelButton: false,
+                              confirmButtonColor: '#DD6B55',
+                              confirmButtonText: 'OK',
+                          },@*function (isConfirm){
+                              if (isConfirm) {
+                                  window.location.href = "@Url.Action("AssessmentEntry","Home")";
+                                  // handle Confirm button click
+                              }
+
+                          });*@
+                              function (isConfirm) {
+                                  if (isConfirm) {
+                                      window.location.href = "@Url.Action("AssessmentEntry","Home")?username=" + $('#UserName').val() + "&PassWord=" + $('#PassWord').val();
+                                  }
+                              });
+                         /* alert("Saved Successfully");*/
+                      }
+                },
+                error: function () {
+                    alert("  Something went wrong..")
+                },
+            });
+    }
+
+    function parseHTMLTableElem() {
+        debugger;
+            const columns = Array.from(document.getElementById("tblAssessmentDetail").querySelectorAll('th')).map(it => it.textContent)
+        const rows = document.getElementById("tblAssessmentDetail").querySelectorAll('tbody > tr')
+            return Array.from(rows).map(row => {
+                const cells = Array.from(row.querySelectorAll('td'))
+                return columns.reduce((obj, col, idx) => {
+                    debugger;
+                    if (idx > 3) {
+                        obj[col] = cells[idx].childNodes[1].value
+                    }
+                    else {
+                        obj[col] = cells[idx].textContent
+                    }
+                    return obj
+                }, {})
+            })
+
+        }
+
+</script>
+

@@ -1,0 +1,91 @@
+﻿@if (Model.Tables["Students"] != null && Model.Tables["Students"].Rows.Count > 0)
+{
+    <table id="tblAssessmentDetail" class="table table-bordered table-striped  color-border" width="100%">
+        <thead>
+            <tr>
+                <th style="width: 1%;">@Html.Label("#")</th>
+                @foreach (System.Data.DataColumn col in Model.Tables["Students"].Columns)
+                {
+                    if (col.ColumnName != "ID")
+                    {
+                        <th>@Html.Label(col.ColumnName)</th>
+                    }
+                    else
+                    {
+                        <th style="display:none">@Html.Label(col.ColumnName)</th>
+                    }
+                }
+                <th style="width: 1%;">@Html.Label("Action")</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+
+                int i = 1;
+                foreach (System.Data.DataRow row in Model.Tables["Students"].Rows)
+                {
+                        <tr>
+                            <td>
+                                @i
+                            </td>
+                            @for (int j = 0; j < row.ItemArray.Length; j++)
+                            {
+                                if (j != 1 && j < 3)
+                                {
+                                    <td>
+                                        @row.ItemArray[j].ToString()
+                                    </td>
+                                }
+                                if (j == 1)
+                                {
+                                    <td style="display:none">
+                                        @row.ItemArray[j].ToString()
+                                    </td>
+                                }
+                                if (j > 2)
+                                {
+                                    <td>
+                                        <input style="width:70% !important;" type="text" class="form-control" value="@row.ItemArray[j].ToString()" onkeypress="return NumberFilter(event)" />
+                                    </td>
+                                }
+                            }
+                            <td>
+                                <a id="@row.ItemArray[1]" name="@row.ItemArray[1]" title="View Details" class="btn table-btn ql-bg-blue fa fa-eye btnEye">
+                                </a>
+                            </td>
+                            <!--<td>-->
+                            @*<a id="@item.condid" name="@item.condid" title="View Requests" onclick="ViewSuppliers(@item.condid,@TempData["DRUG_SUP_POST_ID"].ToString(),this)" class="btn table-btn bg-green fa fa-eye">*@
+                            @*</a>*@
+                            <!--</td>-->
+                        </tr>
+                    i++;
+
+                }
+            }
+        </tbody>
+    </table>
+}
+<script>
+    function NumberFilter(e) {
+        debugger;/*Grabbing the unicode value of the key that was pressed*/
+
+        var unicode;
+        try {   /*IE*/
+            unicode = e.keyCode;
+        }
+        catch (err) {
+            try { /*Netscape, Mozilla, FireFox...*/
+                unicode = event.keyCode;
+            }
+            catch (error) {  /*Other*/
+                unicode = e.which;
+            }
+        }
+        /*if the value entered is not a unicode value between 48 and 57 return false*/
+        if (unicode > 31 && (unicode < 46 || unicode > 57)) {
+            return false;
+        }
+
+    }
+</script>

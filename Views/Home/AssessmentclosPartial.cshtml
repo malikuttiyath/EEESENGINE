@@ -1,0 +1,46 @@
+﻿@if (Model.Tables["ff_AssessmentCLOs"] != null && Model.Tables["ff_AssessmentCLOs"].Rows.Count > 0)
+{
+    <table id="tblAssessment" class="table table-bordered table-striped  color-border" width="100%">
+        <thead>
+            <tr>
+                <th style="width: 1%;">@Html.Label("#")</th>
+                @foreach (System.Data.DataColumn col in Model.Tables["ff_AssessmentCLOs"].Columns)
+                {
+                    if (col.ColumnName == "QUESTION CODE" || col.ColumnName == "CLO CODE")
+                    {
+                        <th style="width:15%">@Html.Label(col.ColumnName)</th>
+                    }
+                    else
+                    {
+                        <th>@Html.Label(col.ColumnName)</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int k = 1;
+                foreach (System.Data.DataRow row in Model.Tables["ff_AssessmentCLOs"].Rows)
+                {
+                    <tr>
+                        <td>
+                            @k
+                        </td>
+                        @for (int j = 0; j < row.ItemArray.Length; j++)
+                        {
+
+                            <td>
+                                @row.ItemArray[j].ToString()
+                            </td>
+                        }
+                        <!--<td>-->
+                        @*<a id="@item.condid" name="@item.condid" title="View Requests" onclick="ViewSuppliers(@item.condid,@TempData["DRUG_SUP_POST_ID"].ToString(),this)" class="btn table-btn bg-green fa fa-eye">*@
+                        @*</a>*@
+                        <!--</td>-->
+                    </tr>
+                    k++;
+                }
+            }
+        </tbody>
+    </table>
+}

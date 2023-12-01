@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "InstructorHome";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* .card {
+        width: 197px;
+        height: 138px;
+    }*/
+    .selected-btn {
+        background: linear-gradient(180deg, #2196f3, #009688);
+        border: 1px solid #0b96ab;
+        color: #fff !important;
+    }
+    .selected {
+        background: #1b96e0 !important;
+    }
+
+    .panel-default > .panel-heading {
+        border: unset;
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        font-size: 11px;
+    }
+
+    .nav-tabs > li > a {
+        font-size: 11px;
+    }
+
+    .table > thead:first-child > tr:first-child > th {
+        border: 0;
+    }
+
+    #tblHomeCurrent {
+        font-size: 11px;
+        border: 0;
+    }
+
+        #tblHomeCurrent tr th {
+            background: #20477a
+        }
+
+    #tblHomePrevious {
+        border: 0;
+        font-size: 11px;
+    }
+</style>
+<div class="panel panel-default">
+    <div class="panel-heading" style="background-color: #20477a; ">
+        <h5 style="color:#ffffff;">INSTRUCTOR'S DASHBOARD</h5>
+    </div>
+    <div class="panel-body">
+        <div role="tabpanel">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#current" aria-controls="home" role="tab" data-toggle="tab">CURRENT YEAR COURSE(S)</a></li>
+                <li role="presentation"><a href="#previous" aria-controls="profile" role="tab" data-toggle="tab">PREVIOUS YEAR COURSE(S)</a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="current">
+                    <div class="col-md-12" id="HomeCurrent" style="padding:0;">
+                        @if (Model.Tables["current"] != null && Model.Tables["current"].Rows.Count > 0)
+                        {
+                            <table id="tblHomeCurrent" class="table table-bordered table-striped  color-border" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 1%;">@Html.Label("#")</th>
+                                        @foreach (System.Data.DataColumn col in Model.Tables["current"].Columns)
+                                        {
+                                            if (col.ColumnName == "COURSE BATCH" || col.ColumnName == "COURSE TITLE")
+                                            {
+                                                <th style="width:30%">@Html.Label(col.ColumnName)</th>
+                                            }
+                                            else if (col.ColumnName == "CREDIT HOURS" || col.ColumnName == "STRENGTH")
+                                            {
+                                                <th>@Html.Label(col.ColumnName)</th>
+                                            }
+                                        }
+                                        <th style="width: 5%;">@Html.Label("Action")</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int k = 1;
+                                        foreach (System.Data.DataRow row in Model.Tables["current"].Rows)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @k
+                                                </td>
+                                                @for (int j = 0; j < row.ItemArray.Length; j++)
+                                                {
+                                                    if (j <= 3)
+                                                    {
+                                                        <td>
+                                                            @row.ItemArray[j].ToString()
+                                                        </td>
+                                                    }
+                                                }
+                                                <td>
+                                                    <input type="button" style="color:black" value="Select" onclick="SetSelectedId(this)" id="@row.ItemArray[4]" class="glyphicon-arrow-right selected-btn" />
+                                                    @*<a id="@row.ItemArray[0]" onclick="SetSelectedId(this)" name="@row.ItemArray[0]" title="View Details" class="btn table-btn ql-bg-blue fa fa-eye"></a>*@
+                                                </td>
+                                            </tr>
+                                            k++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="previous">
+                    <div class="col-md-12" id="HomePrevious" style="padding:0;">
+                        @if (Model.Tables["Previous"] != null && Model.Tables["Previous"].Rows.Count > 0)
+                        {
+                            <table id="tblHomePrevious" class="table table-bordered table-striped  color-border" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 1%;">@Html.Label("#")</th>
+                                        @foreach (System.Data.DataColumn col in Model.Tables["Previous"].Columns)
+                                        {
+                                            if (col.ColumnName == "COURSE BATCH" || col.ColumnName == "COURSE TITLE")
+                                            {
+                                                <th style="width:30%">@Html.Label(col.ColumnName)</th>
+                                            }
+                                            else if (col.ColumnName == "CREDIT HOURS" || col.ColumnName == "STRENGTH")
+                                            {
+                                                <th>@Html.Label(col.ColumnName)</th>
+                                            }
+                                        }
+                                        <th style="width: 5%;">@Html.Label("Action")</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int k = 1;
+                                        foreach (System.Data.DataRow row in Model.Tables["Previous"].Rows)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @k
+                                                </td>
+                                                @for (int j = 0; j < row.ItemArray.Length; j++)
+                                                {
+                                                    if (j <= 3)
+                                                    {
+                                                        <td>
+                                                            @row.ItemArray[j].ToString()
+                                                        </td>
+                                                    }
+                                                }
+                                                <td>
+                                                    @*<a id="@row.ItemArray[0]" onclick="SetSelectedId(this)" name="@row.ItemArray[0]" title="View Details" class="btn table-btn ql-bg-blue fa fa-eye"></a>*@
+                                                    <input type="button" style="color:black" value="Select" onclick="SetSelectedId(this)" id="@row.ItemArray[4]" class="glyphicon-arrow-right selected-btn" />
+                                                </td>
+                                            </tr>
+                                            k++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-12 row">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="">
+                                <div class="">
+                                    @*<h5 class="card-title">Assessment Grade Entry</h5>*@
+                                    <a href="javascript:Redirect('Assessment Grade Entry');" class="btn btn-primary">
+                                        Assessment Grade Entry<span>
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="">
+                                <div class="">
+                                    @*<h5 class="card-title">KPI-Direct Assesment</h5>*@
+                                    <a href="javascript:Redirect('KPI-Direct Assesment');" class="btn btn-primary">
+                                        KPI-Direct Assesment<span>
+                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="SelectedCourse" value="" />
+    <input type="hidden" value="@TempData["UserName"]" id="UserName" />
+    <input type="hidden" value="@TempData["Password"]" id="PassWord" />
+    <input type="hidden" value="@TempData["Token"]" id="Token" />
+</div>
+<script>
+    $(document).ready(function () {
+        var all_tr = $('tr');
+        $('td input[type="button"]').on('click', function () {
+            all_tr.removeClass('selected');
+            $(this).closest('tr').addClass('selected');
+        });
+    })
+    function SetSelectedId(element) {
+        debugger;
+        var id = element.id;
+        $('#SelectedCourse').val(id);
+    }
+    function Redirect(page) {
+      if (page == "Assessment Grade Entry") {
+            if ($('#SelectedCourse').val() != '') {
+                window.location.href = "@Url.Action("AssessmentEntry","Home")?username=" + $('#UserName').val() + "&PassWord=" + $('#PassWord').val() + '&redirect=' + 'true' + '&batchId=' + $('#SelectedCourse').val();
+            }
+        }
+        else {
+             if ($('#SelectedCourse').val() != '') {
+                window.location.href = "@Url.Action("KPIDirectAssessment", "Home")?username=" + $('#UserName').val() + "&PassWord=" + $('#PassWord').val() + '&redirect=' + 'true' + '&batchId=' + $('#SelectedCourse').val();
+            }
+        }
+    }
+</script>

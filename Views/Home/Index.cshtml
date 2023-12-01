@@ -1,0 +1,99 @@
+﻿
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<style>
+    .login-form {
+        width: 350px;
+        background: #405187;
+        border-radius: 10px;
+        padding: 15px 0px 15px 15px;
+        height:240px;
+    }
+    .d-flex{
+        display:flex;
+        justify-content:center;
+    }
+</style>
+<div class="jumbotron" style="background: transparent;height: 100%; ">
+    <h4 style="text-align: center; height: 30px; padding-top: 5px; color:#fff; " class="" >Welcome to EEES Portal</h4>
+
+    <div class="row" id="dvuser">
+        <div class="col-md-6 d-flex">
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="label">Username</label>
+                    <input type="text" class="form-control" id="txtname" />
+                </div>
+                <div class="form-group">
+                    <label class="label">Password</label>
+                    <input type="password" class="form-control" id="txtpass" />
+                </div>
+              
+                <br />
+                <input type="button" class="btn btn-primary" id="btnsub" value="Submit" onclick="ff_click();" />
+            </div>
+               
+            </div>
+        <div class="col-md-6">
+            <img src="~/assets/img/api.png" class="img-responsive" />
+        </div>
+        </div>
+    <hr />
+
+    <div class="row" id="dvshow">
+        <div class="col-md-6">
+          
+                @if (ViewBag.Data != null && ViewBag.Data != "")
+                {
+                    <p>@ViewBag.Data.ToString()</p><br />
+                }
+           
+          
+            <div id="dvdata">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#dvuser").show();
+        $("#dvshow").hide();
+    });
+
+    function ff_click() {
+
+        if ($("#txtname").val() != "" && $("#txtpass").val() != "") {
+            @*$.ajax
+                ({
+                    method: 'GET',
+                    data: { username: $("#txtname").val(), password: $("#txtpass").val() },
+                    url: '@Url.Action("ff_apicall", "Home", new { Area = "" })',
+
+                    datatype: 'json',
+
+                    success: function (data) {
+
+                        if (data != "") {
+                            $("#dvuser").hide();
+                            $("#dvshow").show();
+
+                            $("#dvdata").append(data);
+                        }
+                        else {
+                            $("#dvuser").show();
+                            $("#dvshow").hide();
+                        }
+                    },
+                    error: function () {
+
+                    },
+                });*@
+            window.location = '@Url.Action("InstructorHome", "Home")?username=' + btoa($("#txtname").val()) + '&password=' + btoa($("#txtpass").val());
+        }
+        else {
+            alert("Username and Password needed.");
+        }
+
+    }
+
+</script>
